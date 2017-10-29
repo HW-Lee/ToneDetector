@@ -11,5 +11,6 @@ public class FFT {
         System.loadLibrary("native-fft");
     }
 
+    native static public double[] transformAbs(double[] signal);
     native static public String getVersion();
 }

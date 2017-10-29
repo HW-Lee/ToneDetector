@@ -22,6 +22,8 @@ public class DataView extends View {
     private int mBgColor;
     private Paint mGridPaint;
     private Paint mDataPaint;
+    private int mGridSlotsX;
+    private int mGridSlotsY;
 
     private ArrayList<Double> mDataBuffer;
 
@@ -56,6 +58,9 @@ public class DataView extends View {
 
         mDataPaint.setStrokeWidth(5.0f);
         mDataPaint.setColor(Color.GREEN);
+
+        mGridSlotsX = 0;
+        mGridSlotsY = 0;
     }
 
     public Paint getGridPaint() {
@@ -64,6 +69,14 @@ public class DataView extends View {
 
     public Paint getDataPaint() {
         return mDataPaint;
+    }
+
+    public void setGridSlotsX(int gridSlotsX) {
+        mGridSlotsX = gridSlotsX;
+    }
+
+    public void setGridSlotsY(int gridSlotsY) {
+        mGridSlotsY = gridSlotsY;
     }
 
     public void plot(Collection<? extends Double> data) {
@@ -87,7 +100,23 @@ public class DataView extends View {
         int viewWidth = this.getMeasuredWidth();
 
         canvas.drawColor(mBgColor);
+        mGridPaint.setStrokeWidth(mGridPaint.getStrokeWidth()*2);
         canvas.drawLine(0, viewHeight/2.0f, viewWidth, viewHeight/2.0f, mGridPaint);
+        mGridPaint.setStrokeWidth(mGridPaint.getStrokeWidth()/2);
+
+        if (mGridSlotsX > 0) {
+            for (int i = 1; i < mGridSlotsX; i++) {
+                float x = (float) viewWidth/mGridSlotsX * i;
+                canvas.drawLine(x, 0, x, viewHeight, mGridPaint);
+            }
+        }
+
+        if (mGridSlotsY > 0) {
+            for (int i = 1; i < mGridSlotsY; i++) {
+                float y = (float) viewHeight/mGridSlotsY * i;
+                canvas.drawLine(0, y, viewWidth, y, mGridPaint);
+            }
+        }
 
         for (int i = 0; i < mDataBuffer.size()-1; i++) {
             float startX = (float) viewWidth/mDataBuffer.size() * i;
