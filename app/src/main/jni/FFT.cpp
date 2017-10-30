@@ -46,11 +46,7 @@ uint32_t ceilpw2(uint32_t k)
 
 std::vector<complexdbl> internal_FFT(std::vector<complexdbl> data, std::vector<complexdbl> twiddle)
 {
-    std::vector<complexdbl> buf1(data);
-    std::vector<complexdbl> buf2(data.size());
-    std::vector<complexdbl> *input = &buf1;
-    std::vector<complexdbl> *output = &buf2;
-    std::vector<complexdbl> *temp_ptr;
+    std::vector<complexdbl> buf(data);
     uint32_t N = (uint32_t) data.size();
     uint32_t twiddle_step = N;
 
@@ -58,17 +54,13 @@ std::vector<complexdbl> internal_FFT(std::vector<complexdbl> data, std::vector<c
         for (uint32_t offset = 0; offset < N; offset+=(N/twiddle_step)) {
             for (uint32_t i = 0; i < (N/twiddle_step/2); i++) {
                 complexdbl W = twiddle[i*twiddle_step];
-                complexdbl f_even = (*input)[offset+i] * UNITARY_FACTOR;
-                complexdbl f_odd = (*input)[offset+i+N/twiddle_step/2] * UNITARY_FACTOR;
-                (*output)[offset+i] = f_even + W * f_odd;
-                (*output)[offset+i+N/twiddle_step/2] = f_even - W * f_odd;
+                complexdbl f_even = buf[offset+i] * UNITARY_FACTOR;
+                complexdbl f_odd = buf[offset+i+N/twiddle_step/2] * UNITARY_FACTOR;
+                buf[offset+i] = f_even + W * f_odd;
+                buf[offset+i+N/twiddle_step/2] = f_even - W * f_odd;
             }
         }
-
-        temp_ptr = input;
-        input = output;
-        output = temp_ptr;
     }
 
-    return *input;
+    return buf;
 }
